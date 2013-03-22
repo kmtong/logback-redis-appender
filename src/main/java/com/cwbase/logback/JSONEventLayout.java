@@ -30,7 +30,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 	private boolean locationInfo = false;
 	private boolean properties = false;
-	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
 
 	String source;
 	String sourceHost;
