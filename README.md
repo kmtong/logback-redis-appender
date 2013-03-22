@@ -16,13 +16,12 @@ Configurable Options
 Example
 -------
 
-  <appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
-    <source>myApplicationName</source>
-    <sourcePath>myApplicationName</sourcePath>
-    <type>myApplication</type>
-    <tags>production</tags>
-    <host>192.168.56.10</host>
-    <port>6380</port>
-    <key>logstash</key>
-  </appender>
-
+    <appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+        <source>myApplicationName</source>
+        <sourcePath>myApplicationName</sourcePath>
+        <type>myApplication</type>
+        <tags>production</tags>
+        <host>192.168.56.10</host>
+        <port>6380</port>
+        <key>logstash</key>
+    </appender>
