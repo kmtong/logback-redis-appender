@@ -41,8 +41,14 @@ public class RedisAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
 		try {
 			String json = layout.doLayout(event);
 			client.rpush(key, json);
+		} catch (Exception e) {
+			e.printStackTrace();
+			pool.returnBrokenResource(client);
+			client = null;
 		} finally {
-			pool.returnResource(client);
+			if (client != null) {
+				pool.returnResource(client);
+			}
 		}
 	}
 
