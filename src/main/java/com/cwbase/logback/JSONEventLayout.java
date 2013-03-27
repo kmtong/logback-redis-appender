@@ -28,6 +28,8 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	private final static char COMMA = ',';
 
 	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
+	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+
 	private boolean locationInfo = false;
 	private boolean properties = false;
 
@@ -89,9 +91,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	/**
 	 * Formats a {@link ILoggingEvent} in conformity with the log4j.dtd.
 	 */
-	public String doLayout(ILoggingEvent event) {
-
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+	public synchronized String doLayout(ILoggingEvent event) {
 
 		// Reset working buffer. If the buffer is too large, then we need a new
 		// one in order to avoid the penalty of creating a large array.
