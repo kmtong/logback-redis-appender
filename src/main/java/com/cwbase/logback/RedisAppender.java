@@ -154,6 +154,30 @@ public class RedisAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
 		this.database = database;
 	}
 
+	public void setMdc(boolean flag) {
+		layout.setProperties(flag);
+	}
+
+	public boolean getMdc() {
+		return layout.getProperties();
+	}
+
+	public void setLocation(boolean flag) {
+		layout.setLocationInfo(flag);
+	}
+
+	public boolean getLocation() {
+		return layout.getLocationInfo();
+	}
+
+	public void setCallerStackIndex(int index) {
+		layout.setCallerStackIdx(index);
+	}
+
+	public int getCallerStackIndex() {
+		return layout.getCallerStackIdx();
+	}
+
 	@Override
 	public void start() {
 		super.start();

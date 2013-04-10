@@ -31,6 +31,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
 
 	private boolean locationInfo = false;
+	private int callerStackIdx = 0;
 	private boolean properties = false;
 
 	String source;
@@ -135,10 +136,11 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		}
 		if (locationInfo) {
 			StackTraceElement[] callerDataArray = event.getCallerData();
-			if (callerDataArray != null && callerDataArray.length > 0) {
+			if (callerDataArray != null
+					&& callerDataArray.length > callerStackIdx) {
 				buf.append(COMMA);
 				buf.append("\"location\":{");
-				StackTraceElement immediateCallerData = callerDataArray[0];
+				StackTraceElement immediateCallerData = callerDataArray[callerStackIdx];
 				appendKeyValue(buf, "class", immediateCallerData.getClassName());
 				buf.append(COMMA);
 				appendKeyValue(buf, "method",
@@ -156,9 +158,8 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		 * <log4j:properties> <log4j:data name="name" value="value"/>
 		 * </log4j:properties>
 		 */
-		if (this.getProperties()) {
+		if (properties) {
 			Map<String, String> propertyMap = event.getMDCPropertyMap();
-
 			if ((propertyMap != null) && (propertyMap.size() != 0)) {
 				Set<Entry<String, String>> entrySet = propertyMap.entrySet();
 				buf.append(COMMA);
@@ -310,6 +311,22 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public int getCallerStackIdx() {
+		return callerStackIdx;
+	}
+
+	/**
+	 * Location information dump with respect to call stack level. Some
+	 * framework (Play) wraps the original logging method, and dumping the
+	 * location always log the file of the wrapper instead of the actual caller.
+	 * For PlayFramework, I use 2.
+	 * 
+	 * @param callerStackIdx
+	 */
+	public void setCallerStackIdx(int callerStackIdx) {
+		this.callerStackIdx = callerStackIdx;
 	}
 
 }
