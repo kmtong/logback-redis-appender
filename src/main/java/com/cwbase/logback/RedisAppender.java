@@ -1,19 +1,18 @@
 package com.cwbase.logback;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
+import org.apache.commons.pool.impl.GenericObjectPool;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Protocol;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.apache.commons.pool.impl.GenericObjectPool;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Protocol;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
-
-public class RedisAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
+public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
 	JedisPool pool;
 
@@ -36,7 +35,7 @@ public class RedisAppender extends UnsynchronizedAppenderBase<LoggingEvent> {
 	}
 
 	@Override
-	protected void append(LoggingEvent event) {
+	protected void append(ILoggingEvent event) {
 		Jedis client = pool.getResource();
 		try {
 			String json = layout.doLayout(event);
