@@ -15,7 +15,7 @@ Configurable Options
 * timeout: Redis connection timeout (default: 2000)
 * password: Redis connection password (default no password)
 * database: Redis database number (default 0)
-* mdc: Set to true if you want to log MDC properties (default false)
+* properties: Set to true if you want to log MDC properties (default false)
 * location: Set to true if you want to log the source file (default false)
 * callerStackIndex: As location is determined by call stack, if you use some
   log wrapper, the location will always be the wrapper instead. 
