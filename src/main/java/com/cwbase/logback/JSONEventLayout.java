@@ -1,18 +1,19 @@
 package com.cwbase.logback;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.core.LayoutBase;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
-import ch.qos.logback.core.LayoutBase;
 
 /**
  * Adapt from XMLLayout
@@ -23,12 +24,9 @@ import ch.qos.logback.core.LayoutBase;
 public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	private final int DEFAULT_SIZE = 256;
-	private final int UPPER_LIMIT = 2048;
 	private final static char DBL_QUOTE = '"';
 	private final static char COMMA = ',';
-
-	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
-	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+  private final static DateTimeFormatter df = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SZ");
 
 	private boolean locationInfo = false;
 	private int callerStackIdx = 0;
@@ -92,15 +90,8 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	/**
 	 * Formats a {@link ILoggingEvent} in conformity with the log4j.dtd.
 	 */
-	public synchronized String doLayout(ILoggingEvent event) {
-
-		// Reset working buffer. If the buffer is too large, then we need a new
-		// one in order to avoid the penalty of creating a large array.
-		if (buf.capacity() > UPPER_LIMIT) {
-			buf = new StringBuilder(DEFAULT_SIZE);
-		} else {
-			buf.setLength(0);
-		}
+	public String doLayout(ILoggingEvent event) {
+    StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
 		buf.append("{");
 		appendKeyValue(buf, "@source", source);
@@ -116,7 +107,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		appendKeyValue(buf, "@message", event.getFormattedMessage());
 		buf.append(COMMA);
 		appendKeyValue(buf, "@timestamp",
-				df.format(new Date(event.getTimeStamp())));
+				new DateTime(event.getTimeStamp()).toString(df));
 		buf.append(COMMA);
 
 		// ---- fields ----
