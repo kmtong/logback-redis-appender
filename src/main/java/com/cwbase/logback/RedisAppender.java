@@ -1,16 +1,17 @@
 package com.cwbase.logback;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import org.apache.commons.pool.impl.GenericObjectPool;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Protocol;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Iterator;
+
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Protocol;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 
 public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
@@ -180,7 +181,7 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	@Override
 	public void start() {
 		super.start();
-		pool = new JedisPool(new GenericObjectPool.Config(), host, port,
+		pool = new JedisPool(new GenericObjectPoolConfig(), host, port,
 				timeout, password, database);
 	}
 
