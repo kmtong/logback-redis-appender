@@ -54,7 +54,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	 * 
 	 * <p>
 	 * If you are embedding this layout within an
-	 * {@link org.apache.log4j.net.SMTPAppender} then make sure to set the
+	 * <code>org.apache.log4j.net.SMTPAppender</code> then make sure to set the
 	 * <b>LocationInfo</b> option of that appender as well.
 	 */
 	public void setLocationInfo(boolean flag) {
