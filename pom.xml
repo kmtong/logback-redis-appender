@@ -8,6 +8,9 @@
 	<packaging>jar</packaging>
 
 	<name>Logback Redis Appender</name>
+	<description>Primarily for delivering logback logs to Logstash through
+		Redis Server
+	</description>
 	<url>https://github.com/kmtong/logback-redis-appender</url>
 
 	<licenses>
