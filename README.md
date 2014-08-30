@@ -1,8 +1,19 @@
 
 [![Build Status](https://travis-ci.org/kmtong/logback-redis-appender.png?branch=master)](https://travis-ci.org/kmtong/logback-redis-appender)
 
+# Usage
+
+Now in Maven Central Repository:
+
+```xml
+<dependency>
+  <groupId>com.cwbase</groupId>
+  <artifactId>logstash-redis-appender</artifactId>
+  <version>1.1.0</version>
+</dependency>
+```
+
 # Configurable Options
---------------------
 
 ## Event Related
 
@@ -31,7 +42,6 @@
 
 
 # Example
--------
 
 ## Logback XML Configuration:
 
@@ -59,7 +69,6 @@
 
 
 # ChangeLogs
-------------
 
 ## Version 1.0.0 -> 1.1.0
 
