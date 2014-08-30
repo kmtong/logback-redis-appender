@@ -103,24 +103,23 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		}
 
 		buf.append("{");
-		appendKeyValue(buf, "@source", source);
+		appendKeyValue(buf, "source", source);
 		buf.append(COMMA);
-		appendKeyValue(buf, "@source_host", sourceHost);
+		appendKeyValue(buf, "host", sourceHost);
 		buf.append(COMMA);
-		appendKeyValue(buf, "@source_path", sourcePath);
+		appendKeyValue(buf, "path", sourcePath);
 		buf.append(COMMA);
-		appendKeyValue(buf, "@type", type);
+		appendKeyValue(buf, "type", type);
 		buf.append(COMMA);
-		appendKeyValue(buf, "@tags", tags);
+		appendKeyValue(buf, "tags", tags);
 		buf.append(COMMA);
-		appendKeyValue(buf, "@message", event.getFormattedMessage());
+		appendKeyValue(buf, "message", event.getFormattedMessage());
 		buf.append(COMMA);
 		appendKeyValue(buf, "@timestamp",
 				df.format(new Date(event.getTimeStamp())));
 		buf.append(COMMA);
 
 		// ---- fields ----
-		buf.append("\"@fields\":{");
 		appendKeyValue(buf, "logger", event.getLoggerName());
 		buf.append(COMMA);
 		appendKeyValue(buf, "level", event.getLevel().toString());
@@ -175,7 +174,6 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 				buf.append("}");
 			}
 		}
-		buf.append("}");
 		buf.append("}");
 
 		return buf.toString();

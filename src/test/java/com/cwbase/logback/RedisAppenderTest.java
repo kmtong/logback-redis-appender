@@ -39,7 +39,7 @@ public class RedisAppenderTest {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode node = mapper.readTree(content);
 
-		assertEquals("test-application", node.get("@source").asText());
-		assertEquals("Test Log #1", node.get("@message").asText());
+		assertEquals("test-application", node.get("source").asText());
+		assertEquals("Test Log #1", node.get("message").asText());
 	}
 }
