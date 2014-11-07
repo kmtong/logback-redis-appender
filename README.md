@@ -8,7 +8,7 @@ Now in Maven Central Repository:
 ```xml
 <dependency>
   <groupId>com.cwbase</groupId>
-  <artifactId>logstash-redis-appender</artifactId>
+  <artifactId>logback-redis-appender</artifactId>
   <version>1.1.0</version>
 </dependency>
 ```
