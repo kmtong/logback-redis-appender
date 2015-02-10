@@ -15,30 +15,30 @@ Now in Maven Central Repository:
 
 # Configurable Options
 
-## Event Related
-
-* source: Logstash Event [source] value
-* sourceHost: Logstash Event [host] value (default: current hostname)
-* sourcePath: Logstash Event [path] value
-* tags: Comma-separated strings of Logstash [tags]
-* type: Logstash Event [type] value
-
 ## Redis Related
 
-* host: Redis Server Host (default: localhost)
-* port: Redis Server Port (default: 6379)
-* key: Redis Key to append the logs to
-* timeout: Redis connection timeout (default: 2000)
-* password: Redis connection password (default no password)
-* database: Redis database number (default 0)
+* **key**: (required) Redis Key to append the logs to
+* **host**: (optional, default: localhost) Redis Server Host 
+* **port**: (optional, default: 6379) Redis Server Port 
+* **timeout**: (optional, default: 2000) Redis connection timeout 
+* **password**: (optional, default: no password) Redis connection password 
+* **database**: (optional, default: 0) Redis database number 
+
+## Event Related
+
+* **source**: (optional) Logstash Event [source] value
+* **sourceHost**: (optional, default: current hostname) Logstash Event [host] value 
+* **sourcePath**: (optional) Logstash Event [path] value
+* **tags**: (optional) Comma-separated strings of Logstash [tags]
+* **type**: (optional) Logstash Event [type] value
 
 ## Logback/Java Specific
 
-* mdc: Set to true if you want to log MDC properties (default false)
-* location: Set to true if you want to log the source file (default false)
-* callerStackIndex: As location is determined by call stack, if you use some
+* **mdc**: (optional, default: false) Set to true if you want to log MDC properties 
+* **location**: (optional, default: false) Set to true if you want to log the source file 
+* **callerStackIndex**: (optional, default: 0) As location is determined by call stack, if you use some
   log wrapper, the location will always be the wrapper instead. 
-  Set it to 1 or higher to specify the particular call stack level (default 0)
+  Set it to 1 or higher to specify the particular call stack level 
 
 
 # Example
