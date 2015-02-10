@@ -79,7 +79,7 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	public String getTags() {
 		if (layout.getTags() != null) {
 			Iterator<String> i = layout.getTags().iterator();
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			while (i.hasNext()) {
 				sb.append(i.next());
 				if (i.hasNext()) {
