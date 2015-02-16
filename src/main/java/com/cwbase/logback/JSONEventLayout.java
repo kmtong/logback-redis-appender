@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -102,36 +104,37 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 			buf.setLength(0);
 		}
 
+		Map<String, String> mdc = event.getMDCPropertyMap();
 		buf.append("{");
-		appendKeyValue(buf, "source", source);
+		appendKeyValue(buf, "source", source, mdc);
 		buf.append(COMMA);
-		appendKeyValue(buf, "host", sourceHost);
+		appendKeyValue(buf, "host", sourceHost, mdc);
 		buf.append(COMMA);
-		appendKeyValue(buf, "path", sourcePath);
+		appendKeyValue(buf, "path", sourcePath, mdc);
 		buf.append(COMMA);
-		appendKeyValue(buf, "type", type);
+		appendKeyValue(buf, "type", type, mdc);
 		buf.append(COMMA);
-		appendKeyValue(buf, "tags", tags);
+		appendKeyValue(buf, "tags", tags, mdc);
 		buf.append(COMMA);
-		appendKeyValue(buf, "message", event.getFormattedMessage());
+		appendKeyValue(buf, "message", event.getFormattedMessage(), null);
 		buf.append(COMMA);
 		appendKeyValue(buf, "@timestamp",
-				df.format(new Date(event.getTimeStamp())));
+				df.format(new Date(event.getTimeStamp())), null);
 		buf.append(COMMA);
 
 		// ---- fields ----
-		appendKeyValue(buf, "logger", event.getLoggerName());
+		appendKeyValue(buf, "logger", event.getLoggerName(), null);
 		buf.append(COMMA);
-		appendKeyValue(buf, "level", event.getLevel().toString());
+		appendKeyValue(buf, "level", event.getLevel().toString(), null);
 		buf.append(COMMA);
-		appendKeyValue(buf, "thread", event.getThreadName());
+		appendKeyValue(buf, "thread", event.getThreadName(), null);
 		buf.append(COMMA);
-		appendKeyValue(buf, "level", event.getLevel().toString());
+		appendKeyValue(buf, "level", event.getLevel().toString(), null);
 		IThrowableProxy tp = event.getThrowableProxy();
 		if (tp != null) {
 			buf.append(COMMA);
 			String throwable = ThrowableProxyUtil.asString(tp);
-			appendKeyValue(buf, "throwable", throwable);
+			appendKeyValue(buf, "throwable", throwable, null);
 		}
 		if (locationInfo) {
 			StackTraceElement[] callerDataArray = event.getCallerData();
@@ -140,15 +143,18 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 				buf.append(COMMA);
 				buf.append("\"location\":{");
 				StackTraceElement immediateCallerData = callerDataArray[callerStackIdx];
-				appendKeyValue(buf, "class", immediateCallerData.getClassName());
+				appendKeyValue(buf, "class",
+						immediateCallerData.getClassName(), null);
 				buf.append(COMMA);
 				appendKeyValue(buf, "method",
-						immediateCallerData.getMethodName());
+						immediateCallerData.getMethodName(), null);
 				buf.append(COMMA);
-				appendKeyValue(buf, "file", immediateCallerData.getFileName());
+				appendKeyValue(buf, "file", immediateCallerData.getFileName(),
+						null);
 				buf.append(COMMA);
 				appendKeyValue(buf, "line",
-						Integer.toString(immediateCallerData.getLineNumber()));
+						Integer.toString(immediateCallerData.getLineNumber()),
+						null);
 				buf.append("}");
 			}
 		}
@@ -166,7 +172,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 				Iterator<Entry<String, String>> i = entrySet.iterator();
 				while (i.hasNext()) {
 					Entry<String, String> entry = i.next();
-					appendKeyValue(buf, entry.getKey(), entry.getValue());
+					appendKeyValue(buf, entry.getKey(), entry.getValue(), null);
 					if (i.hasNext()) {
 						buf.append(COMMA);
 					}
@@ -179,14 +185,15 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		return buf.toString();
 	}
 
-	private void appendKeyValue(StringBuilder buf, String key, String value) {
+	private void appendKeyValue(StringBuilder buf, String key, String value,
+			Map<String, String> mdc) {
 		if (value != null) {
 			buf.append(DBL_QUOTE);
 			buf.append(escape(key));
 			buf.append(DBL_QUOTE);
 			buf.append(':');
 			buf.append(DBL_QUOTE);
-			buf.append(escape(value));
+			buf.append(escape(mdcSubst(value, mdc)));
 			buf.append(DBL_QUOTE);
 		} else {
 			buf.append(DBL_QUOTE);
@@ -198,7 +205,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	}
 
 	private void appendKeyValue(StringBuilder buf, String key,
-			List<String> values) {
+			List<String> values, Map<String, String> mdc) {
 		buf.append(DBL_QUOTE);
 		buf.append(escape(key));
 		buf.append(DBL_QUOTE);
@@ -209,7 +216,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 			while (i.hasNext()) {
 				String v = i.next();
 				buf.append(DBL_QUOTE);
-				buf.append(escape(v));
+				buf.append(escape(mdcSubst(v, mdc)));
 				buf.append(DBL_QUOTE);
 				if (i.hasNext()) {
 					buf.append(',');
@@ -217,6 +224,24 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 			}
 		}
 		buf.append(']');
+	}
+
+	private String mdcSubst(String v, Map<String, String> mdc) {
+		if (mdc != null && v != null && v.contains("@{")) {
+			Pattern p = Pattern.compile("\\@\\{([^}]*)\\}");
+			Matcher m = p.matcher(v);
+			StringBuffer sb = new StringBuffer(v.length());
+			while (m.find()) {
+				String val = mdc.get(m.group(1));
+				if (val == null) {
+					val = m.group(1) + "_NOT_FOUND";
+				}
+				m.appendReplacement(sb, Matcher.quoteReplacement(val));
+			}
+			m.appendTail(sb);
+			return sb.toString();
+		}
+		return v;
 	}
 
 	private String escape(String s) {
