@@ -72,6 +72,10 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
 
 # ChangeLogs
 
+## Version 1.1.0 -> 1.1.1
+
+* Implemented MDC property resolution by @{fieldname} in appender configuration.  See #8.
+
 ## Version 1.0.0 -> 1.1.0
 
 * https://github.com/elasticsearch/logstash/blob/master/lib/logstash/codecs/oldlogstashjson.rb
