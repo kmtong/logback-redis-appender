@@ -9,7 +9,7 @@ Now in Maven Central Repository:
 <dependency>
   <groupId>com.cwbase</groupId>
   <artifactId>logback-redis-appender</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
@@ -31,6 +31,8 @@ Now in Maven Central Repository:
 * **sourcePath**: (optional) Logstash Event [path] value
 * **tags**: (optional) Comma-separated strings of Logstash [tags]
 * **type**: (optional) Logstash Event [type] value
+
+Since 1.1.1 these fields support MDC property resolution by @{varname}.
 
 ## Logback/Java Specific
 
