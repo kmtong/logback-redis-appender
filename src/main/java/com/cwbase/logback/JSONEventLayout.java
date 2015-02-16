@@ -31,6 +31,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+	private Pattern MDC_VAR_PATTERN = Pattern.compile("\\@\\{([^}]*)\\}");
 
 	private boolean locationInfo = false;
 	private int callerStackIdx = 0;
@@ -228,8 +229,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	private String mdcSubst(String v, Map<String, String> mdc) {
 		if (mdc != null && v != null && v.contains("@{")) {
-			Pattern p = Pattern.compile("\\@\\{([^}]*)\\}");
-			Matcher m = p.matcher(v);
+			Matcher m = MDC_VAR_PATTERN.matcher(v);
 			StringBuffer sb = new StringBuffer(v.length());
 			while (m.find()) {
 				String val = mdc.get(m.group(1));
