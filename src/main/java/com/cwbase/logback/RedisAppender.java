@@ -181,7 +181,9 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	@Override
 	public void start() {
 		super.start();
-		pool = new JedisPool(new GenericObjectPoolConfig(), host, port,
+		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+		config.setTestOnBorrow(true);
+		pool = new JedisPool(config, host, port,
 				timeout, password, database);
 	}
 
