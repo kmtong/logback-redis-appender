@@ -9,7 +9,7 @@ Now in Maven Central Repository:
 <dependency>
   <groupId>com.cwbase</groupId>
   <artifactId>logback-redis-appender</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.2</version>
 </dependency>
 ```
 
@@ -71,6 +71,10 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
 
 
 # ChangeLogs
+
+## Version 1.1.1 -> 1.1.2
+
+* Test the Redis Connection before borrow, see #9.
 
 ## Version 1.1.0 -> 1.1.1
 
