@@ -46,6 +46,8 @@ public class RedisAppenderTest {
 
 		assertEquals("test-application", node.get("source").asText());
 		assertEquals("Test Log #1", node.get("message").asText());
+		assertEquals("MyValue", node.get("MyKey").asText());
+		assertEquals("MyOtherValue", node.get("MySecondKey").asText());
 	}
 
 	@Test

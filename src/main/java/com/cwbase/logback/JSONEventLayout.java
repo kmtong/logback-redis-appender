@@ -41,6 +41,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	String sourceHost;
 	String sourcePath;
 	List<String> tags;
+	StringBuilder additionalFields;
 	String type;
 
 	@Override
@@ -181,6 +182,12 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 				buf.append("}");
 			}
 		}
+
+		if(additionalFields != null) {
+			buf.append(COMMA);
+			buf.append(additionalFields);
+		}
+
 		buf.append("}");
 
 		return buf.toString();
@@ -350,6 +357,15 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	 */
 	public void setCallerStackIdx(int callerStackIdx) {
 		this.callerStackIdx = callerStackIdx;
+	}
+
+	public void addAdditionalField(AdditionalField p) {
+		if(additionalFields == null) {
+			additionalFields = new StringBuilder(DEFAULT_SIZE);
+		} else {
+			additionalFields.append(COMMA);
+		}
+		appendKeyValue(additionalFields, p.getKey(), p.getValue(), null);
 	}
 
 }

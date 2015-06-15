@@ -178,6 +178,10 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		return layout.getCallerStackIdx();
 	}
 
+	public void addAdditionalField(AdditionalField p) {
+		layout.addAdditionalField(p);
+	}
+
 	@Override
 	public void start() {
 		super.start();
