@@ -66,6 +66,8 @@ public class RedisAppenderTest {
 		assertEquals("test1", tags.get(0).asText());
 		assertEquals("test2", tags.get(1).asText());
 		assertEquals("test1 test2 mdcvar3_NOT_FOUND", tags.get(2).asText());
+		assertEquals("test1", node.get("MyKey").asText());
+		assertEquals("test2", node.get("MySecondKey").asText());
 	}
 
 	@Before

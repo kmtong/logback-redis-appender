@@ -1,20 +1,16 @@
 package com.cwbase.logback;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.LayoutBase;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Adapt from XMLLayout
@@ -41,7 +37,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	String sourceHost;
 	String sourcePath;
 	List<String> tags;
-	StringBuilder additionalFields;
+	List<AdditionalField> additionalFields;
 	String type;
 
 	@Override
@@ -184,8 +180,10 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		}
 
 		if(additionalFields != null) {
-			buf.append(COMMA);
-			buf.append(additionalFields);
+			for(AdditionalField field : additionalFields) {
+				buf.append(COMMA);
+				appendKeyValue(buf, field.getKey(), field.getValue(), mdc);
+			}
 		}
 
 		buf.append("}");
@@ -361,11 +359,9 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	public void addAdditionalField(AdditionalField p) {
 		if(additionalFields == null) {
-			additionalFields = new StringBuilder(DEFAULT_SIZE);
-		} else {
-			additionalFields.append(COMMA);
+			additionalFields = new ArrayList<AdditionalField>();
 		}
-		appendKeyValue(additionalFields, p.getKey(), p.getValue(), null);
+		additionalFields.add(p);
 	}
 
 }
