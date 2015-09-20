@@ -8,6 +8,14 @@
     <mdc>true</mdc>
     <location>true</location>
     <callerStackIndex>0</callerStackIndex>
+    <additionalField>
+      <key>MyKey</key>
+      <value>@{mdcvar1}</value>
+    </additionalField>
+    <additionalField>
+      <key>MySecondKey</key>
+      <value>@{mdcvar2}</value>
+    </additionalField>
   </appender>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
