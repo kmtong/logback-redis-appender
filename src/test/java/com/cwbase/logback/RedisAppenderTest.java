@@ -1,6 +1,7 @@
 package com.cwbase.logback;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +71,28 @@ public class RedisAppenderTest {
 		assertEquals("test2", node.get("MySecondKey").asText());
 	}
 
+	@Test
+	public void logTestAsync() throws Exception {
+		long SIZE = 100L;
+		long WAIT = 5000L;
+		// refer to logback-async.xml in test folder
+		configLogger("/logback-async.xml");
+		Logger logger = LoggerFactory.getLogger(RedisAppenderTest.class);
+		for (long i = 0; i < SIZE; i++) {
+			logger.debug("Test Async Log {}", i);
+		}
+		// probably not immediately have the same size
+		long size0 = redis.llen(key);
+		System.out.println("Log Size: " + size0);
+		assertTrue(size0 < SIZE);
+
+		Thread.sleep(WAIT);
+
+		long size1 = redis.llen(key);
+		System.out.println("Log Size After Wait: " + size1);
+		assertTrue(size0 < size1);
+	}
+
 	@Before
 	public void setUp() {
 		System.out.println("Before Test, clearing Redis");
@@ -80,15 +103,13 @@ public class RedisAppenderTest {
 	}
 
 	protected void configLogger(String loggerxml) {
-		LoggerContext context = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
 		try {
 			JoranConfigurator configurator = new JoranConfigurator();
 			configurator.setContext(context);
 			context.reset();
-			configurator.doConfigure(this.getClass().getResourceAsStream(
-					loggerxml));
+			configurator.doConfigure(this.getClass().getResourceAsStream(loggerxml));
 		} catch (JoranException je) {
 			// StatusPrinter will handle this
 		}

@@ -42,6 +42,12 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
   log wrapper, the location will always be the wrapper instead. 
   Set it to 1 or higher to specify the particular call stack level 
 
+# Note
+## Logging Asynchronously
+
+As this appender would synchronously log to the Redis server, this would cause the logging thread
+to be hanged.  One resolution would be using the [AsyncAppender](http://logback.qos.ch/manual/appenders.html#AsyncAppender) provided by standard logback. Please refer to the below example configurations.
+(Thanks GuiSim for pointing this out) 
 
 # Example
 
@@ -69,8 +75,32 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
      }
     }
 
+## Use with AsyncAppender:
+
+    <configuration>
+      <appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+        <source>mySource</source>
+        <sourcePath>mySourcePath</sourcePath>
+        <type>myApplication</type>
+        <tags>production</tags>
+        <host>192.168.56.10</host>
+        <port>6379</port>
+        <key>logstash</key>
+      </appender>
+      <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH" />
+      </appender>
+      <root level="DEBUG">
+        <appender-ref ref="ASYNC" />
+      </root>
+    </configuration>
 
 # ChangeLogs
+
+## Version 1.1.4 -> 1.1.2
+
+* Add support to provide additional fields to the JSON object sent to redis. (Thanks kevinvandervlist)
+* Fix MDC properties in additional fields. (Thanks kevinvandervlist)
 
 ## Version 1.1.1 -> 1.1.2
 
