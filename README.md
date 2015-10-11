@@ -9,7 +9,7 @@ Now in Maven Central Repository:
 <dependency>
   <groupId>com.cwbase</groupId>
   <artifactId>logback-redis-appender</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.4</version>
 </dependency>
 ```
 
