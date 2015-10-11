@@ -45,8 +45,10 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
 # Note
 ## Logging Asynchronously
 
-As this appender would synchronously log to the Redis server, this would cause the logging thread
-to be hanged.  One resolution would be using the [AsyncAppender](http://logback.qos.ch/manual/appenders.html#AsyncAppender) provided by standard logback. Please refer to the below example configurations.
+As this appender would synchronously log to the Redis server, this may cause the logging thread
+to be hanged on some error conditions (network timeout or so).  One resolution would be using the 
+[AsyncAppender](http://logback.qos.ch/manual/appenders.html#AsyncAppender) provided by standard 
+logback. Please refer to the below example configurations.
 (Thanks GuiSim for pointing this out) 
 
 # Example
