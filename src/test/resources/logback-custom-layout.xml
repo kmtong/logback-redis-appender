@@ -1,0 +1,26 @@
+<configuration>
+	<appender name="TEST" class="com.cwbase.logback.RedisAppender">
+		<host>localhost</host>
+		<key>logstash</key>
+		<layout class="com.cwbase.logback.JSONEventLayout">
+			<source>test-application</source>
+			<type>test</type>
+			<mdc>true</mdc>
+			<location>true</location>
+			<callerStackIndex>0</callerStackIndex>
+			<tags>test</tags>
+		</layout>
+	</appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%logger{15} - %message%n%xException{5}</pattern>
+		</encoder>
+	</appender>
+	<logger name="application" level="DEBUG" />
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="TEST" />
+	</root>
+
+</configuration>

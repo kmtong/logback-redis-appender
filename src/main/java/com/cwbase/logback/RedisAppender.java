@@ -1,23 +1,25 @@
 package com.cwbase.logback;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Protocol;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
 
 public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
 	JedisPool pool;
 
-	JSONEventLayout layout;
+	// keep this for config compatibility for now
+	JSONEventLayout jsonlayout;
+
+	Layout<ILoggingEvent> layout;
 
 	// logger configurable options
 	String host = "localhost";
@@ -28,18 +30,14 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	int database = Protocol.DEFAULT_DATABASE;
 
 	public RedisAppender() {
-		layout = new JSONEventLayout();
-		try {
-			setSourceHost(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e) {
-		}
+		jsonlayout = new JSONEventLayout();
 	}
 
 	@Override
 	protected void append(ILoggingEvent event) {
 		Jedis client = pool.getResource();
 		try {
-			String json = layout.doLayout(event);
+			String json = layout == null ? jsonlayout.doLayout(event) : layout.doLayout(event);
 			client.rpush(key, json);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -52,33 +50,40 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		}
 	}
 
+	@Deprecated
 	public String getSource() {
-		return layout.getSource();
+		return jsonlayout.getSource();
 	}
 
+	@Deprecated
 	public void setSource(String source) {
-		layout.setSource(source);
+		jsonlayout.setSource(source);
 	}
 
+	@Deprecated
 	public String getSourceHost() {
-		return layout.getSourceHost();
+		return jsonlayout.getSourceHost();
 	}
 
+	@Deprecated
 	public void setSourceHost(String sourceHost) {
-		layout.setSourceHost(sourceHost);
+		jsonlayout.setSourceHost(sourceHost);
 	}
 
+	@Deprecated
 	public String getSourcePath() {
-		return layout.getSourcePath();
+		return jsonlayout.getSourcePath();
 	}
 
+	@Deprecated
 	public void setSourcePath(String sourcePath) {
-		layout.setSourcePath(sourcePath);
+		jsonlayout.setSourcePath(sourcePath);
 	}
 
+	@Deprecated
 	public String getTags() {
-		if (layout.getTags() != null) {
-			Iterator<String> i = layout.getTags().iterator();
+		if (jsonlayout.getTags() != null) {
+			Iterator<String> i = jsonlayout.getTags().iterator();
 			StringBuilder sb = new StringBuilder();
 			while (i.hasNext()) {
 				sb.append(i.next());
@@ -91,19 +96,22 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		return null;
 	}
 
+	@Deprecated
 	public void setTags(String tags) {
 		if (tags != null) {
 			String[] atags = tags.split(",");
-			layout.setTags(Arrays.asList(atags));
+			jsonlayout.setTags(Arrays.asList(atags));
 		}
 	}
 
+	@Deprecated
 	public String getType() {
-		return layout.getType();
+		return jsonlayout.getType();
 	}
 
+	@Deprecated
 	public void setType(String type) {
-		layout.setType(type);
+		jsonlayout.setType(type);
 	}
 
 	public String getHost() {
@@ -154,32 +162,47 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		this.database = database;
 	}
 
+	@Deprecated
 	public void setMdc(boolean flag) {
-		layout.setProperties(flag);
+		jsonlayout.setProperties(flag);
 	}
 
+	@Deprecated
 	public boolean getMdc() {
-		return layout.getProperties();
+		return jsonlayout.getProperties();
 	}
 
+	@Deprecated
 	public void setLocation(boolean flag) {
-		layout.setLocationInfo(flag);
+		jsonlayout.setLocationInfo(flag);
 	}
 
+	@Deprecated
 	public boolean getLocation() {
-		return layout.getLocationInfo();
+		return jsonlayout.getLocationInfo();
 	}
 
+	@Deprecated
 	public void setCallerStackIndex(int index) {
-		layout.setCallerStackIdx(index);
+		jsonlayout.setCallerStackIdx(index);
 	}
 
+	@Deprecated
 	public int getCallerStackIndex() {
-		return layout.getCallerStackIdx();
+		return jsonlayout.getCallerStackIdx();
 	}
 
+	@Deprecated
 	public void addAdditionalField(AdditionalField p) {
-		layout.addAdditionalField(p);
+		jsonlayout.addAdditionalField(p);
+	}
+
+	public Layout<ILoggingEvent> getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Layout<ILoggingEvent> layout) {
+		this.layout = layout;
 	}
 
 	@Override
@@ -187,8 +210,7 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		super.start();
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
 		config.setTestOnBorrow(true);
-		pool = new JedisPool(config, host, port,
-				timeout, password, database);
+		pool = new JedisPool(config, host, port, timeout, password, database);
 	}
 
 	@Override

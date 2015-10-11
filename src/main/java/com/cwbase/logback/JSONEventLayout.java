@@ -5,6 +5,8 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.LayoutBase;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,6 +41,14 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	List<String> tags;
 	List<AdditionalField> additionalFields;
 	String type;
+
+	
+	public JSONEventLayout() {
+		try {
+			setSourceHost(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+		}
+	}
 
 	@Override
 	public void start() {

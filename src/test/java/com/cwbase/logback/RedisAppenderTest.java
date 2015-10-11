@@ -3,6 +3,8 @@ package com.cwbase.logback;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.InetAddress;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -91,6 +93,23 @@ public class RedisAppenderTest {
 		long size1 = redis.llen(key);
 		System.out.println("Log Size After Wait: " + size1);
 		assertTrue(size0 < size1);
+	}
+
+	@Test
+	public void logTestCustomLayout() throws Exception {
+		// refer to logback-custom-layout.xml in test folder
+		configLogger("/logback-custom-layout.xml");
+		Logger logger = LoggerFactory.getLogger(RedisAppenderTest.class);
+		logger.debug("Test Custom Layout Log");
+		long len = redis.llen(key);
+		assertEquals(1L, len);
+		String content = redis.lpop(key);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = mapper.readTree(content);
+
+		assertEquals("test-application", node.get("source").asText());
+		assertEquals("Test Custom Layout Log", node.get("message").asText());
+		assertEquals(InetAddress.getLocalHost().getHostName(), node.get("host").asText());
 	}
 
 	@Before

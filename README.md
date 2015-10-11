@@ -9,13 +9,13 @@ Now in Maven Central Repository:
 <dependency>
   <groupId>com.cwbase</groupId>
   <artifactId>logback-redis-appender</artifactId>
-  <version>1.1.4</version>
+  <version>1.1.5</version>
 </dependency>
 ```
 
 # Configurable Options
 
-## Redis Related
+## Redis Related (RedisAppender Attributes)
 
 * **key**: (required) Redis Key to append the logs to
 * **host**: (optional, default: localhost) Redis Server Host 
@@ -24,7 +24,7 @@ Now in Maven Central Repository:
 * **password**: (optional, default: no password) Redis connection password 
 * **database**: (optional, default: 0) Redis database number 
 
-## Event Related
+## Event Related (JSONEventLayout Attributes)
 
 * **source**: (optional) Logstash Event [source] value
 * **sourceHost**: (optional, default: current hostname) Logstash Event [host] value 
@@ -34,7 +34,7 @@ Now in Maven Central Repository:
 
 Since 1.1.1 these fields support MDC property resolution by @{varname}.
 
-## Logback/Java Specific
+## Logback/Java Specific (JSONEventLayout Attributes)
 
 * **mdc**: (optional, default: false) Set to true if you want to log MDC properties 
 * **location**: (optional, default: false) Set to true if you want to log the source file 
@@ -43,6 +43,11 @@ Since 1.1.1 these fields support MDC property resolution by @{varname}.
   Set it to 1 or higher to specify the particular call stack level 
 
 # Note
+## Custom Layout
+
+If you want to use other Layout (e.g. net.logstash.logback.layout.LogstashLayout) instead of our
+own JSONEventLayout, see the sample configuration below.  (Since version 1.1.5)
+
 ## Logging Asynchronously
 
 As this appender would synchronously log to the Redis server, this may cause the logging thread
@@ -97,7 +102,33 @@ logback. Please refer to the below example configurations.
       </root>
     </configuration>
 
+## Use Custom Layout:
+
+    <configuration>
+	  <appender name="LOGSTASH" class="com.cwbase.logback.RedisAppender">
+	    <!-- RedisAppender Attributes Here -->
+        <host>192.168.56.10</host>
+        <port>6379</port>
+        <key>logstash</key>
+        <!-- Use your own Custom Layout here -->
+		<layout class="com.cwbase.logback.JSONEventLayout">
+	      <!-- JSONEventLayout Attributes Here -->
+          <source>mySource</source>
+          <sourcePath>mySourcePath</sourcePath>
+          <type>myApplication</type>
+          <tags>production</tags>
+		</layout>
+	  </appender>
+      <root level="DEBUG">
+        <appender-ref ref="LOGSTASH" />
+      </root>
+    </configuration>
+
 # ChangeLogs
+
+## Version 1.1.5 -> 1.1.4
+
+* Ability to set custom Layout (Thanks brynjargles suggestion)
 
 ## Version 1.1.4 -> 1.1.2
 
