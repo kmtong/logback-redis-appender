@@ -56,6 +56,9 @@ to be hanged on some error conditions (network timeout or so).  One resolution w
 logback. Please refer to the below example configurations.
 (Thanks GuiSim for pointing this out) 
 
+## Default values for MDC properties
+MDC properties can be configured with default values by using the `:-` signifier. For example: `@{varname:-foo}` will result in `foo` if the `varname` property is not defined.
+
 # Example
 
 ## Logback XML Configuration:

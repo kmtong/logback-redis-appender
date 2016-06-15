@@ -29,7 +29,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 
 	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
-	private Pattern MDC_VAR_PATTERN = Pattern.compile("\\@\\{([^}]*)\\}");
+	private Pattern MDC_VAR_PATTERN = Pattern.compile("\\@\\{([^}^:-]*)(:-([^}]*)?)?\\}");
 
 	private boolean locationInfo = false;
 	private int callerStackIdx = 0;
@@ -249,7 +249,8 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 			while (m.find()) {
 				String val = mdc.get(m.group(1));
 				if (val == null) {
-					val = m.group(1) + "_NOT_FOUND";
+					// If a default value exists, use it
+					val = (m.group(3) != null) ? val = m.group(3) : m.group(1) + "_NOT_FOUND";
 				}
 				m.appendReplacement(sb, Matcher.quoteReplacement(val));
 			}

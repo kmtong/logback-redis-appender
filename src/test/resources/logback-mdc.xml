@@ -4,7 +4,7 @@
     <type>test</type>
     <host>localhost</host>
     <key>logstash</key>
-    <tags>@{mdcvar1},@{mdcvar2},@{mdcvar1} @{mdcvar2} @{mdcvar3}</tags>
+    <tags>@{mdcvar1},@{mdcvar2},@{mdcvar1} @{mdcvar2} @{mdcvar3} @{mdcvar4:-foo}</tags>
     <mdc>true</mdc>
     <location>true</location>
     <callerStackIndex>0</callerStackIndex>
