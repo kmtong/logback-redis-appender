@@ -136,8 +136,6 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 		appendKeyValue(buf, "level", event.getLevel().toString(), null);
 		buf.append(COMMA);
 		appendKeyValue(buf, "thread", event.getThreadName(), null);
-		buf.append(COMMA);
-		appendKeyValue(buf, "level", event.getLevel().toString(), null);
 		IThrowableProxy tp = event.getThrowableProxy();
 		if (tp != null) {
 			buf.append(COMMA);
