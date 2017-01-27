@@ -28,7 +28,7 @@ public class JSONEventLayout extends LayoutBase<ILoggingEvent> {
 	private final static char COMMA = ',';
 
 	private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
-	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SZ");
+	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private Pattern MDC_VAR_PATTERN = Pattern.compile("\\@\\{([^}^:-]*)(:-([^}]*)?)?\\}");
 
 	private boolean locationInfo = false;
