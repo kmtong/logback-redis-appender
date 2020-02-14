@@ -3,7 +3,7 @@
 
 	<groupId>com.cwbase</groupId>
 	<artifactId>logback-redis-appender</artifactId>
-	<version>1.1.6-SNAPSHOT</version>
+	<version>1.1.6</version>
 	<packaging>jar</packaging>
 
 	<name>Logback Redis Appender</name>
@@ -33,7 +33,7 @@
 		<developerConnection>scm:git:git@github.com:kmtong/logback-redis-appender.git
 		</developerConnection>
 		<url>https://github.com/kmtong/logback-redis-appender.git</url>
-	  <tag>HEAD</tag>
+	  <tag>logback-redis-appender-1.1.6</tag>
   </scm>
 
 	<properties>
