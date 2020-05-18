@@ -64,6 +64,12 @@
 			<version>1.2.3</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                    <groupId>com.github.kstyrc</groupId>
+                    <artifactId>embedded-redis</artifactId>
+                    <version>0.6</version>
+                    <scope>test</scope>
+                </dependency>
 	</dependencies>
 
 	<distributionManagement>

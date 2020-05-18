@@ -21,12 +21,26 @@ import ch.qos.logback.core.util.StatusPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.io.IOException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import redis.embedded.RedisServer;
 
 public class RedisAppenderTest {
 
+        static RedisServer redisServer;
 	String key = "logstash";
 	Jedis redis;
 
+        @BeforeClass
+        public static void beforeClass() throws IOException {
+            redisServer = new RedisServer(6379);
+            redisServer.start();
+        }
+        @AfterClass
+        public static void afterClass() {
+            redisServer.stop();
+        }
 	@Test
 	public void logTest() throws Exception {
 		// refer to logback.xml in test folder
