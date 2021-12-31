@@ -10,6 +10,7 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
 public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
@@ -28,6 +29,8 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 	int timeout = Protocol.DEFAULT_TIMEOUT;
 	String password = null;
 	int database = Protocol.DEFAULT_DATABASE;
+	int timeBetweenEvictionRuns = 30000; //default in JedisPoolConfig
+	int minEvictableIdleTime = 60000; //default in JedisPoolConfig
 
 	public RedisAppender() {
 		jsonlayout = new JSONEventLayout();
@@ -203,11 +206,29 @@ public class RedisAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 		this.layout = layout;
 	}
 
+	public int getTimeBetweenEvictionRuns() {
+		return timeBetweenEvictionRuns;
+	}
+
+	public void setTimeBetweenEvictionRuns(int timeBetweenEvictionRuns) {
+		this.timeBetweenEvictionRuns = timeBetweenEvictionRuns;
+	}
+
+	public int getMinEvictableIdleTime() {
+		return minEvictableIdleTime;
+	}
+
+	public void setMinEvictableIdleTime(int minEvictableIdleTime) {
+		this.minEvictableIdleTime = minEvictableIdleTime;
+	}
+
 	@Override
 	public void start() {
 		super.start();
-		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+		GenericObjectPoolConfig config = new JedisPoolConfig();
 		config.setTestOnBorrow(true);
+		config.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRuns);
+		config.setMinEvictableIdleTimeMillis(minEvictableIdleTime);
 		pool = new JedisPool(config, host, port, timeout, password, database);
 	}
 
